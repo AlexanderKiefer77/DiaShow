@@ -74,3 +74,187 @@ const svg = `
 const url = "data:image/svg+xml," + encodeURIComponent(svg);
 document.querySelector("link[rel='icon']").href = url;
 
+
+/* ###################################### */
+document.addEventListener('DOMContentLoaded', () => {
+
+    const CONFIG = {
+        slideDuration: 4000,
+
+        effects: ['none', 'fade', 'slide', 'wipe', 'blind', 'zoom-in', 'mosaic'],
+
+        //Enter the names of all photos here. The photos must be in the img folder.
+        images: [
+            'img/f1.jpg',
+            'img/f2.jpg',
+            'img/f3.jpg',
+            'img/f4.jpg',
+            'img/f5.jpg',
+            'img/f6.jpg',
+            'img/f7.jpg',
+            'img/f8jpg',
+            'img/f9.jpg',
+            'img/f10.jpg',
+            'img/f11.jpg',
+            'img/f12.jpg',
+            'img/f13.jpg',
+            'img/f14.jpg',
+            'img/f15.jpg',
+            'img/f16.jpg',
+            'img/f17.jpg',
+            'img/f18.jpg',
+            'img/f19.jpg',
+            'img/f20.jpg',
+            'img/f21.jpg',
+            'img/f22.jpg',
+            'img/f23.jpg',
+            'img/f24.jpg',
+            'img/f25.jpg',
+            'img/f26.jpg',
+            'img/f27.jpg',
+            'img/f28.jpg',
+            'img/f29.jpg',
+            'img/f30.jpg',
+            'img/f31.jpg',
+            'img/f32.jpg',
+            'img/f33.jpg',
+            'img/f34.jpg',
+            'img/f35.jpg',
+            'img/f36.jpg',
+            'img/f37.jpg',
+            'img/f38.jpg',
+            'img/f39.jpg',
+            'img/f40.jpg',
+            'img/f41.jpg',
+            'img/f42.jpg',
+            'img/f43.jpg',
+            'img/f44.jpg',
+            'img/f45.jpg',
+            'img/f46.jpg',
+            'img/f47.jpg',
+            'img/f48.jpg',
+            'img/f49.jpg',
+            'img/f50.jpg'
+        ]
+    };
+
+    const startScreen = document.getElementById('startScreen');
+    const startBtn = document.getElementById('startBtn');
+    const slideshow = document.getElementById('slideshow');
+
+    let images = [];
+    let index = 0;
+    let interval = null;
+    let currentEffect = 'none';
+
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function preloadNext() {
+        for (let i = 1; i <= 3; i++) {
+            const next = (index + i) % images.length;
+            const img = new Image();
+            img.src = images[next];
+        }
+    }
+
+    // Creates a slide and adds the random effect as a CSS class.
+    function createSlide(src, effectClass, isActive = false) {
+        const slide = document.createElement('div');
+        slide.className = `slide fx-${effectClass}`;
+
+        if (isActive) {
+            slide.classList.add('active');
+        }
+
+        const img = document.createElement('img');
+        img.src = src;
+
+        slide.appendChild(img);
+        return slide;
+    }
+
+    function showNext() {
+        const oldSlide = slideshow.querySelector('.slide.active');
+        index++;
+
+        if (index >= images.length) {
+            images = shuffle(CONFIG.images);
+            index = 0;
+        }
+
+        // Select a random effect from the list.
+        const randomIdx = Math.floor(Math.random() * CONFIG.effects.length);
+        currentEffect = CONFIG.effects[randomIdx];
+
+        // Create a new slide with the selected random effect.
+        const newSlide = createSlide(images[index], currentEffect);
+        slideshow.appendChild(newSlide);
+
+        // Trigger for Animation
+        setTimeout(() => {
+            newSlide.classList.add('active');
+
+            if (oldSlide) {
+                oldSlide.classList.remove('active');
+                oldSlide.classList.add('exit');
+            }
+        }, 50);
+
+        // Delete the old image after the animation finishes.
+        setTimeout(() => {
+            if (oldSlide) oldSlide.remove();
+        }, 2000);
+
+        preloadNext();
+    }
+
+    function start() {
+        if (interval) return;
+
+        images = shuffle(CONFIG.images);
+        index = 0;
+
+        startScreen.style.display = 'none';
+        slideshow.classList.add('active');
+
+        // The first image starts with a fade from black.
+        const first = createSlide(images[0], 'fade', true);
+        slideshow.appendChild(first);
+
+        preloadNext();
+        interval = setInterval(showNext, CONFIG.slideDuration);
+
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log("Fullscreen blockiert: ", err);
+            });
+        }
+    }
+
+    function stop() {
+        clearInterval(interval);
+        interval = null;
+
+        slideshow.innerHTML = '';
+        slideshow.classList.remove('active');
+        startScreen.style.display = 'flex';
+
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+    }
+
+    startBtn.addEventListener('click', start);
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') stop();
+    });
+});
+

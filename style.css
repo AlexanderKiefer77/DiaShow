@@ -7,15 +7,16 @@
 body {
     background: #000;
     overflow: hidden;
-    font-family: Arial, sans-serif;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
+/* ###################################### */
 .badgeFavicon {
     width: 16px;
     height: 16px;
 }
 
-
+/* ###################################### */
 /* STARTSCREEN */
 .start-screen {
     height: 100dvh;
@@ -61,4 +62,111 @@ body {
 
 .btn:hover {
     box-shadow: inset 0px 0px 10px black, 0px 0px 15px #d3cdc5;
+}
+
+/* ###################################### */
+/* SLIDESHOW CONTAINER */
+.slideshow {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: black;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.slideshow.active {
+    display: block;
+}
+
+/* SLIDE BASIS */
+.slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    will-change: opacity, transform, clip-path;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Dynamic Animations */
+/* 1. NONE */
+.slide.fx-none.active {
+    opacity: 1;
+}
+
+/* 2. FADE */
+.slide.fx-fade {
+    transition: opacity 1.2s ease-in-out;
+}
+
+.slide.fx-fade.active {
+    opacity: 1;
+}
+
+/* 3. SLIDE */
+.slide.fx-slide {
+    transform: translateX(100%);
+    transition: transform 0.9s ease-in-out, opacity 0.9s;
+}
+
+.slide.fx-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slide.fx-slide.exit {
+    opacity: 1;
+    transform: translateX(-100%);
+    transition: transform 0.9s ease-in-out;
+}
+
+/* 4. WIPE */
+.slide.fx-wipe {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1.0s ease-in-out;
+}
+
+.slide.fx-wipe.active {
+    clip-path: inset(0 0 0 0);
+}
+
+/* 5. Jalousie */
+.slide.fx-blind {
+    opacity: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0, 0 25%, 100% 25%, 100% 25%, 0 25%, 0 50%, 100% 50%, 100% 50%, 0 50%, 0 75%, 100% 75%, 100% 75%, 0 75%);
+    transition: clip-path 1.2s ease-in-out;
+}
+
+.slide.fx-blind.active {
+    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%, 0 25%, 100% 25%, 100% 50%, 0 50%, 0 50%, 100% 50%, 100% 75%, 0 75%, 0 75%, 100% 75%, 100% 100%, 0 100%);
+}
+
+/* 6. ZOOM-IN */
+.slide.fx-zoom-in {
+    transform: scale(0.5);
+    transition: transform 1.0s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.0s ease;
+}
+
+.slide.fx-zoom-in.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* 7. MOSAIC */
+.slide.fx-mosaic {
+    opacity: 0;
+    transition: opacity 1.2s steps(4, end);
+}
+
+.slide.fx-mosaic.active {
+    opacity: 1;
 }
