@@ -10,6 +10,12 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.badgeFavicon {
+    width: 16px;
+    height: 16px;
+}
+
+
 /* STARTSCREEN */
 .start-screen {
     height: 100dvh;
