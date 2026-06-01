@@ -161,7 +161,7 @@ body {
     transform: scale(1);
 }
 
-/* 7. MOSAIC */
+/* 7. MOSAIC  */
 .slide.fx-mosaic {
     opacity: 0;
     transition: opacity 1.2s steps(4, end);
