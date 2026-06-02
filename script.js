@@ -1,11 +1,10 @@
 
-/* ###################################### */
 document.addEventListener('DOMContentLoaded', () => {
 
     const CONFIG = {
         slideDuration: 3500,
 
-        effects: ['none'], /* 'wipe', 'fade', 'zoom-in', 'blind', 'slide' */
+        // effects: ['fade'],
 
         //Enter the names of all photos here. The photos must be in the img folder.
         images: [
@@ -125,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let images = [];
     let index = 0;
     let interval = null;
-    let currentEffect = 'none';
 
     function shuffle(arr) {
         const a = [...arr];
@@ -160,21 +158,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return slide;
     }
 
+    function preloadFirstImage() {
+        const img = new Image();
+        img.src = CONFIG.images[0];
+    }
+
     function showNext() {
         const oldSlide = slideshow.querySelector('.slide.active');
         index++;
 
         if (index >= images.length) {
-            images = shuffle(CONFIG.images);
+            const firstImage = CONFIG.images[0];
+            const rest = shuffle(CONFIG.images.slice(1));
+            images = [firstImage, ...rest];
             index = 0;
         }
 
-        // Select a random effect from the list.
-        const randomIdx = Math.floor(Math.random() * CONFIG.effects.length);
-        currentEffect = CONFIG.effects[randomIdx];
-
-        // Create a new slide with the selected random effect.
-        const newSlide = createSlide(images[index], currentEffect);
+        // Create a new slide with fade effect.
+        const newSlide = createSlide(images[index], 'fade');
         slideshow.appendChild(newSlide);
 
         // Trigger for Animation
@@ -198,15 +199,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function start() {
         if (interval) return;
 
-        images = shuffle(CONFIG.images);
+        const firstImage = CONFIG.images[0];
+        const rest = shuffle(CONFIG.images.slice(1));
+        images = [firstImage, ...rest];
         index = 0;
 
         startScreen.style.display = 'none';
         slideshow.classList.add('active');
 
         // The first image starts with a fade from black.
-        const first = createSlide(images[0], 'fade', true);
+        const first = createSlide(images[0], 'fade');
         slideshow.appendChild(first);
+
+        setTimeout(() => {
+            first.classList.add('active');
+        }, 50);
 
         preloadNext();
         interval = setInterval(showNext, CONFIG.slideDuration);
@@ -217,6 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    preloadFirstImage();
 
     function stop() {
         clearInterval(interval);
